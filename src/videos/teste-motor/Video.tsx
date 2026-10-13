@@ -157,7 +157,7 @@ export const Video: React.FC<VideoProps> = ({id, beats, brand, seed, withAudio =
         <div style={{position: 'absolute', left: 80, right: 80, top: 230}}>
           <div style={{overflow: 'hidden'}}>
             <div style={{fontFamily: display, fontWeight: 800, fontSize: 150, letterSpacing: -6, color: c.ink, lineHeight: 1, transform: `translateY(${(1 - sign) * 110}%)`}}>
-              Visual<span style={{color: c.accent}}>Pro</span>
+              Sua<span style={{color: c.accent}}>Marca</span>
             </div>
           </div>
           <div style={{overflow: 'hidden', marginTop: 22}}>

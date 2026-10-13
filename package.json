@@ -2,7 +2,7 @@
   "name": "geracao-de-conteudos-motion",
   "version": "0.1.0",
   "private": true,
-  "description": "Motor de criação de vídeos motion da VisualPro, feito em Remotion.",
+  "description": "Motor de criação de vídeos motion design com IA, feito em Remotion.",
   "type": "module",
   "scripts": {
     "studio": "remotion studio",

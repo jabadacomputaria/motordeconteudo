@@ -1,4 +1,4 @@
-// A marca muda a cada vídeo (VisualPro ou cliente). Cada vídeo tem o seu brand.json.
+// A marca muda a cada vídeo (a do cliente de cada peça). Cada vídeo tem o seu brand.json.
 import {loadFont} from '@remotion/fonts';
 import {staticFile} from 'remotion';
 

@@ -1,4 +1,4 @@
-# Motor de conteúdo motion · VisualPro
+# Motor de conteúdo motion
 
 Motor para criar vídeos curtos (Reels, TikTok, Shorts) em código, com o [Remotion](https://www.remotion.dev).
 Cada vídeo é um arquivo de cenas em React, com trilha e efeitos sonoros sintetizados por código e um processo
@@ -69,7 +69,7 @@ render.mjs                   contact sheet, quadro avulso e render final
 ## Vídeo novo
 
 1. Copie `src/videos/teste-motor` para `src/videos/<novo-id>` e troque o `id` no `brief.json`.
-2. Ajuste `brand.json` com as cores e fontes do cliente (ou da VP). A marca muda por vídeo de propósito.
+2. Ajuste `brand.json` com as cores e fontes do cliente. A marca muda por vídeo de propósito.
 3. Ajuste a música no `brief.json`: `bpm`, `bars` (compassos) e `cues` (que efeito sonoro toca em qual beat).
 4. Reescreva o `Video.tsx` a partir da tabela da copy.
 5. Registre o vídeo em `src/videos/registry.ts`.

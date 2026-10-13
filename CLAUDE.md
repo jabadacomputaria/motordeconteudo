@@ -1,4 +1,4 @@
-# Motor de conteúdo motion (VisualPro)
+# Motor de conteúdo motion
 
 Projeto Remotion para vídeos curtos verticais. O dono (Juan) não programa: explique em português simples,
 sem jargão, e entregue o vídeo pronto, não instruções.
