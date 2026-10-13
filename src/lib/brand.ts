@@ -13,18 +13,23 @@ export type Brand = {
     muted: string; // texto secundário, linhas
     accent: string; // a ÚNICA cor de destaque
     onAccent: string; // texto em cima da cor de destaque
+    trail?: string; // opcional: rastro/elementos de identidade
+    line?: string; // opcional: linhas finas e curvas
   };
   fonts: {
-    display: {family: string; files: FontFile[]}; // uma fonte de título
+    display: {family: string; files: FontFile[]; titleWeight?: number}; // uma fonte de título
     ui: {family: string; files: FontFile[]}; // uma fonte de interface
+    mono?: {family: string; files: FontFile[]}; // opcional: variante mono da fonte de interface (números, código)
   };
+  notes?: string;
 };
 
 const loaded = new Set<string>();
 
 // Carrega as fontes do brand a partir de public/. O Remotion segura o render até terminar.
 export const loadBrandFonts = (brand: Brand) => {
-  for (const face of [brand.fonts.display, brand.fonts.ui]) {
+  const faces = [brand.fonts.display, brand.fonts.ui, ...(brand.fonts.mono ? [brand.fonts.mono] : [])];
+  for (const face of faces) {
     for (const file of face.files) {
       const key = `${face.family}:${file.weight}`;
       if (loaded.has(key)) continue;

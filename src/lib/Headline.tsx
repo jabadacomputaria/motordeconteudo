@@ -15,9 +15,10 @@ export type HeadlineProps = {
   stagger?: number;
   fps?: number;
   frame?: number;
+  weight?: number; // peso do título (vem do brand: fonts.display.titleWeight)
 };
 
-export const Headline: React.FC<HeadlineProps> = ({lines, accentWords = [], enter, exit, color, accent, family, size, stagger = 2, fps: fpsProp, frame: frameProp}) => {
+export const Headline: React.FC<HeadlineProps> = ({lines, accentWords = [], enter, exit, color, accent, family, size, stagger = 2, fps: fpsProp, frame: frameProp, weight = 800}) => {
   const current = useCurrentFrame();
   const frame = frameProp ?? current;
   const config = useVideoConfig();
@@ -27,7 +28,7 @@ export const Headline: React.FC<HeadlineProps> = ({lines, accentWords = [], ente
   const out = exit === undefined ? 0 : ease(frame, exit, 9);
   let k = 0;
   return (
-    <div style={{fontFamily: family, fontWeight: 800, fontSize: size, lineHeight: 1.02, letterSpacing: -size * 0.035, color}}>
+    <div style={{fontFamily: family, fontWeight: weight, fontSize: size, lineHeight: 1.02, letterSpacing: -size * 0.035, color}}>
       {lines.map((words, li) => (
         <div key={li} style={{display: 'flex', flexWrap: 'wrap', columnGap: size * 0.24}}>
           {words.map((w) => {
