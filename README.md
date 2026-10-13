@@ -66,13 +66,6 @@ scripts/
 render.mjs                   contact sheet, quadro avulso e render final
 ```
 
-## Marcas prontas
-
-- `src/brands/kyneo.json`: marca do estúdio Kyneo (Unbounded para títulos e logotipo, Geist e Geist Mono para interface, paleta preto, prata e branco, destaque por inversão).
-- Símbolo em vetor em `public/brands/kyneo/`: `kyneo-simbolo-escuro.svg` (foto de perfil), `kyneo-simbolo-transparente.svg` (sobre fundos escuros) e `kyneo-simbolo-claro.svg` (sobre fundos claros).
-
-Para usar uma marca pronta num vídeo, importe o JSON dela no `registry.ts` no lugar do `brand.json` da pasta do vídeo.
-
 ## Vídeo novo
 
 1. Copie `src/videos/teste-motor` para `src/videos/<novo-id>` e troque o `id` no `brief.json`.
