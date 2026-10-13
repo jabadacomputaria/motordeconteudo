@@ -1,0 +1,28 @@
+{
+  "name": "VisualPro (provisório)",
+  "colors": {
+    "bg": "#F2EFE8",
+    "surface": "#FFFFFF",
+    "ink": "#121212",
+    "muted": "#8A867E",
+    "accent": "#FF5A1F",
+    "onAccent": "#FFFFFF"
+  },
+  "fonts": {
+    "display": {
+      "family": "Bricolage Grotesque",
+      "files": [
+        {"src": "fonts/bricolage-grotesque-latin-700-normal.woff2", "weight": "700"},
+        {"src": "fonts/bricolage-grotesque-latin-800-normal.woff2", "weight": "800"}
+      ]
+    },
+    "ui": {
+      "family": "Inter",
+      "files": [
+        {"src": "fonts/inter-latin-400-normal.woff2", "weight": "400"},
+        {"src": "fonts/inter-latin-500-normal.woff2", "weight": "500"},
+        {"src": "fonts/inter-latin-600-normal.woff2", "weight": "600"}
+      ]
+    }
+  }
+}

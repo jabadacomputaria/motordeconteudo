@@ -1,0 +1,34 @@
+{
+  "id": "teste-motor",
+  "title": "Teste do motor: negócio sem site",
+  "format": {"width": 1080, "height": 1920, "fps": 30},
+  "music": {
+    "bpm": 112,
+    "bars": 7,
+    "seed": 7,
+    "rootHz": 55,
+    "progression": [0, 0, 5, 3, 0, 7, 5]
+  },
+  "cues": [
+    {"beat": 0, "sfx": "tick"},
+    {"beat": 1, "sfx": "tick"},
+    {"beat": 2, "sfx": "tick"},
+    {"beat": 4, "sfx": "whoosh"},
+    {"beat": 5, "sfx": "pop"},
+    {"beat": 6, "sfx": "pop"},
+    {"beat": 7, "sfx": "pop"},
+    {"beat": 8, "sfx": "whoosh"},
+    {"beat": 9, "sfx": "pop"},
+    {"beat": 12, "sfx": "whoosh"},
+    {"beat": 13, "sfx": "thud"},
+    {"beat": 14, "sfx": "riser"},
+    {"beat": 16, "sfx": "hit"},
+    {"beat": 18, "sfx": "pop"},
+    {"beat": 20, "sfx": "whoosh"},
+    {"beat": 21, "sfx": "pop"},
+    {"beat": 22, "sfx": "pop"},
+    {"beat": 23, "sfx": "pop"},
+    {"beat": 24, "sfx": "click"},
+    {"beat": 26, "sfx": "chime"}
+  ]
+}
