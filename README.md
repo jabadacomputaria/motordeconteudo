@@ -70,7 +70,7 @@ render.mjs                   contact sheet, quadro avulso e render final
 
 1. Copie `src/videos/teste-motor` para `src/videos/<novo-id>` e troque o `id` no `brief.json`.
 2. Ajuste `brand.json` com as cores e fontes do cliente. A marca muda por vídeo de propósito.
-3. Ajuste a música no `brief.json`: `bpm`, `bars` (compassos) e `cues` (que efeito sonoro toca em qual beat).
+3. Ajuste a música no `brief.json`: `bpm`, `bars` (compassos), `cues` (que efeito sonoro toca em qual beat), `breakBeats` (beats sem bateria, para respiro) e `drums: false` para vinhetas só com ambiência e efeitos.
 4. Reescreva o `Video.tsx` a partir da tabela da copy.
 5. Registre o vídeo em `src/videos/registry.ts`.
 6. Siga o fluxo acima.

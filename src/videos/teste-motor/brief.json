@@ -7,7 +7,8 @@
     "bars": 7,
     "seed": 7,
     "rootHz": 55,
-    "progression": [0, 0, 5, 3, 0, 7, 5]
+    "progression": [0, 0, 5, 3, 0, 7, 5],
+    "breakBeats": [14, 15]
   },
   "cues": [
     {"beat": 0, "sfx": "tick"},

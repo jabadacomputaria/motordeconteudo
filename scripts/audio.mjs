@@ -15,7 +15,7 @@ const id = process.argv[2] || 'teste-motor';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const videoDir = path.join(root, 'src', 'videos', id);
 const brief = JSON.parse(fs.readFileSync(path.join(videoDir, 'brief.json'), 'utf8'));
-const {bpm, bars, seed = 1, rootHz = 55, progression = [0]} = brief.music;
+const {bpm, bars, seed = 1, rootHz = 55, progression = [0], drums = true, breakBeats: breaks = []} = brief.music;
 
 const spb = 60 / bpm;
 const totalBeats = bars * 4;
@@ -147,15 +147,15 @@ const sfx = {
 const beats = [];
 for (let b = 0; b < totalBeats; b++) beats.push(+(b * spb).toFixed(6));
 const barStarts = beats.filter((_, i) => i % 4 === 0);
-const breakBeats = new Set([14, 15]); // respiro antes da virada
+const breakBeats = new Set(breaks); // beats sem bateria (respiro), definidos no brief.json
 
 for (let b = 0; b < totalBeats; b++) {
   const t = beats[b];
   const bar = Math.floor(b / 4);
-  if (!breakBeats.has(b)) kick(t, b % 4 === 0 ? 1 : 0.85);
-  if (!breakBeats.has(b) && bar > 0) hat(t + spb / 2, 1, b % 2 ? 0.3 : -0.3);
+  if (drums && !breakBeats.has(b)) kick(t, b % 4 === 0 ? 1 : 0.85);
+  if (drums && !breakBeats.has(b) && bar > 0) hat(t + spb / 2, 1, b % 2 ? 0.3 : -0.3);
   const hz = semis(rootHz, progression[bar % progression.length]);
-  if (!breakBeats.has(b)) bass(t + spb / 2, hz, spb / 2);
+  if (drums && !breakBeats.has(b)) bass(t + spb / 2, hz, spb / 2);
 }
 barStarts.forEach((t, bar) => pad(t, semis(rootHz, progression[bar % progression.length]), spb * 4));
 
