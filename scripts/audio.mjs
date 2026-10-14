@@ -55,6 +55,10 @@ const N = Math.round(durationSec * SR);
 const NM = Math.round(musicSec * SR);
 const L = new Float32Array(N);
 const R = new Float32Array(N);
+// Efeitos (SFX) num canal separado: não descem junto com a trilha embaixo da voz.
+const SFL = new Float32Array(N);
+const SFR = new Float32Array(N);
+let toSfx = false;
 
 // --- utilidades -----------------------------------------------------------
 const mulberry32 = (s) => {
@@ -82,8 +86,13 @@ const add = (t0, lenSec, fn, gain = 1, pan = 0) => {
     const j = start + i;
     if (j < 0 || j >= N) continue;
     const v = fn(i / SR, i, j);
-    L[j] += v * gl;
-    R[j] += v * gr;
+    if (toSfx) {
+      SFL[j] += v * gl;
+      SFR[j] += v * gr;
+    } else {
+      L[j] += v * gl;
+      R[j] += v * gr;
+    }
   }
 };
 
@@ -229,17 +238,23 @@ const sfx = {
     // Mordida crocante: estalos curtos e irregulares de ruído brilhante, por cerca de 0,3 s.
     const r = mulberry32(seed * 13 + Math.round(t * 1000));
     let x = 0;
-    while (x < 0.3) {
+    while (x < 0.38) {
       let prev = 0;
-      const g = (0.5 + r() * 0.5) * (1 - x / 0.36);
+      const g = (0.5 + r() * 0.5) * (1 - x / 0.45);
       add(t + x, 0.03, (y, i, j) => {
         const n = noise(j * 37 + 3);
         const hp = n - prev;
         prev = n;
         return hp * Math.exp(-y * 120);
-      }, 1.3 * g, r() * 0.5 - 0.25);
-      x += 0.012 + r() * 0.03;
+      }, 4.5 * g, r() * 0.5 - 0.25);
+      x += 0.01 + r() * 0.025;
     }
+    // corpo da mordida: um baque curto e abafado por baixo dos estalos
+    let ph = 0;
+    add(t, 0.12, (y) => {
+      ph += (2 * Math.PI * (260 + 120 * Math.exp(-y * 40))) / SR;
+      return Math.sin(ph) * Math.exp(-y * 30);
+    }, 0.5);
   },
   moto: (t) => {
     // Moto passando: ronco médio que sobe e se afasta (sem grave, para não virar bumbo).
@@ -276,10 +291,12 @@ for (let b = 0; b < totalBeats; b++) {
 barStarts.forEach((t, bar) => pad(t, semis(rootHz, progression[bar % progression.length]), spb * 4));
 
 const cues = (brief.cues || []).map((c) => ({...c, sec: +(c.beat * spb).toFixed(6)}));
+toSfx = true;
 for (const c of cues) {
   if (!sfx[c.sfx]) throw new Error(`SFX desconhecido: ${c.sfx}`);
   sfx[c.sfx](c.sec);
 }
+toSfx = false;
 
 // Fade curto no fim da trilha para não estalar; depois dela, silêncio (a assinatura tem som próprio).
 const fade = Math.round(0.05 * SR);
@@ -289,6 +306,7 @@ for (let i = 0; i < fade; i++) {
   R[NM - 1 - i] *= g;
 }
 for (let i = NM; i < N; i++) L[i] = R[i] = 0;
+for (let i = NM; i < N; i++) SFL[i] = SFR[i] = 0;
 
 const peakDb = () => {
   let p = 0;
@@ -331,11 +349,29 @@ const normalize = () => {
     limit(CEILING_DB);
   }
 };
-normalize();
-
-// Trilha sozinha (stem): é nela que o check mede a sincronia dos golpes com o grid.
-const stemL = L.slice();
-const stemR = R.slice();
+const comb = (a, b2) => {
+  const o = new Float32Array(N);
+  for (let i = 0; i < N; i++) o[i] = a[i] + b2[i];
+  return o;
+};
+// Trilha + efeitos no mesmo nível de antes (-14 LUFS juntos).
+{
+  const k0 = Math.pow(10, (TARGET_LUFS - integratedLufs(comb(L, SFL), comb(R, SFR), SR)) / 20);
+  for (let i = 0; i < N; i++) {
+    L[i] *= k0;
+    R[i] *= k0;
+    SFL[i] *= k0;
+    SFR[i] *= k0;
+  }
+}
+// Trilha + efeitos juntos (stem): é nela que o check mede a sincronia dos golpes com o grid.
+const stemL = comb(L, SFL);
+const stemR = comb(R, SFR);
+{
+  let pk = 0;
+  for (let i = 0; i < N; i++) pk = Math.max(pk, Math.abs(stemL[i]), Math.abs(stemR[i]));
+  if (pk > 0.89) for (let i = 0; i < N; i++) (stemL[i] *= 0.89 / pk), (stemR[i] *= 0.89 / pk);
+}
 
 if (voice || tail) {
   // A trilha fica por baixo da voz: desce duckDb dB enquanto ela fala e volta nos respiros.
@@ -375,9 +411,15 @@ if (voice || tail) {
     }
     const vk = gainOf(TARGET_LUFS - integratedLufs(vl, vr, SR));
     const bk = gainOf(bedDb);
+    const sk = gainOf(brief.voice.sfxDb ?? -1); // efeitos: não abaixam com a voz
     for (let i = 0; i < N; i++) {
-      L[i] = L[i] * bk * duck[i] + vl[i] * vk;
-      R[i] = R[i] * bk * duck[i] + vr[i] * vk;
+      L[i] = L[i] * bk * duck[i] + SFL[i] * sk + vl[i] * vk;
+      R[i] = R[i] * bk * duck[i] + SFR[i] * sk + vr[i] * vk;
+    }
+  } else {
+    for (let i = 0; i < N; i++) {
+      L[i] += SFL[i];
+      R[i] += SFR[i];
     }
   }
   if (tail) {
@@ -391,6 +433,12 @@ if (voice || tail) {
       L[at + i] += tail.l[i] * tk;
       R[at + i] += tail.r[i] * tk;
     }
+  }
+  normalize();
+} else {
+  for (let i = 0; i < N; i++) {
+    L[i] += SFL[i];
+    R[i] += SFR[i];
   }
   normalize();
 }

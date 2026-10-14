@@ -131,7 +131,7 @@
     },
     {
       "beat": 11,
-      "sfx": "pop"
+      "sfx": "thud"
     },
     {
       "beat": 15,
@@ -206,8 +206,12 @@
       "sfx": "pop"
     },
     {
+      "beat": 48,
+      "sfx": "chime"
+    },
+    {
       "beat": 49,
-      "sfx": "whoosh"
+      "sfx": "flip"
     },
     {
       "beat": 51,
