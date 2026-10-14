@@ -7,15 +7,17 @@ import {Video as TesteMotor} from './teste-motor/Video';
 import testeBrief from './teste-motor/brief.json';
 import testeBeats from './teste-motor/beats.json';
 import testeBrand from './teste-motor/brand.json';
+import {entry as kyneoPropostaVisto} from './kyneo-proposta-visto/entry';
 
 export type VideoEntry = {
   id: string;
   component: React.FC<{id: string; beats: Beats; brand: Brand; seed: number; withAudio?: boolean; fps?: number; frame?: number}>;
-  brief: typeof testeBrief;
+  brief: typeof testeBrief & {voice?: unknown; tail?: unknown};
   beats: Beats;
   brand: Brand;
 };
 
 export const videos: VideoEntry[] = [
   {id: testeBrief.id, component: TesteMotor, brief: testeBrief, beats: testeBeats as Beats, brand: testeBrand as Brand},
+  kyneoPropostaVisto as unknown as VideoEntry,
 ];

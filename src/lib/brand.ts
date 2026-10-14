@@ -15,6 +15,7 @@ export type Brand = {
     onAccent: string; // texto em cima da cor de destaque
     trail?: string; // opcional: rastro/elementos de identidade
     line?: string; // opcional: linhas finas e curvas
+    signal?: string; // opcional: cor de sinal de interface (ex.: azul do visto), quando o brief pede uma cor
   };
   fonts: {
     display: {family: string; files: FontFile[]; titleWeight?: number}; // uma fonte de título

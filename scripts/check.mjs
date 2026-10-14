@@ -46,6 +46,13 @@ const lufs = integratedLufs(L, R, sr);
 report(Math.abs(lufs + 14) <= 0.5, 'Loudness', `${lufs.toFixed(2)} LUFS (alvo -14)`);
 
 // 3. Sincronia: mede onde os golpes graves realmente estão e compara com o beats.json.
+// Com voz na mixagem, mede na trilha sozinha (stem.wav), onde os golpes não se misturam com a fala.
+const stem = path.join(root, 'public', id, 'stem.wav');
+if (fs.existsSync(stem)) {
+  const s = readWav16(fs.readFileSync(stem));
+  L.set(s.L);
+  R.set(s.R);
+}
 const mono = new Float32Array(L.length);
 let lp = 0;
 const k = 1 - Math.exp((-2 * Math.PI * 150) / sr);
@@ -62,7 +69,11 @@ for (let i = 0; i < mono.length; i += hop) {
 }
 const onset = env.map((v, i) => Math.max(0, v - (env[i - 1] ?? 0)));
 const win = Math.round(0.04 / 0.002);
-const measured = beats.beats.map((t) => {
+// Só entram os beats que têm golpe de bumbo pelo brief (kickPattern e respiros sem bateria).
+const kp = brief.music.kickPattern || [1];
+const brk = new Set(brief.music.breakBeats || []);
+const withKick = beats.beats.filter((_, i) => kp[i % kp.length] > 0 && !brk.has(i) && brief.music.drums !== false);
+const measured = (withKick.length ? withKick : beats.beats).map((t) => {
   const c = Math.round(t / 0.002);
   const lo = Math.max(0, c - win);
   const hi = Math.min(onset.length - 1, c + win);
@@ -81,6 +92,6 @@ const measured = beats.beats.map((t) => {
 const median = [...measured].sort((a, b) => a.peak - b.peak)[Math.floor(measured.length / 2)].peak;
 const hits = measured.filter((m) => m.peak > median * 0.2);
 const worst = Math.max(...hits.map((m) => Math.abs(m.offsetMs)));
-report(worst <= 12, 'Sincronia', `${hits.length}/${beats.beats.length} beats com golpe medido; maior desvio ${worst} ms (limite 12 ms ≈ 1/3 de frame)`);
+report(worst <= 12, 'Sincronia', `${hits.length}/${measured.length} beats com golpe medido; maior desvio ${worst} ms (limite 12 ms ≈ 1/3 de frame)`);
 
 process.exit(ok ? 0 : 1);
