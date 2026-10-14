@@ -140,13 +140,17 @@ const sfx = {
     const len = 0.45;
     let lp = 0;
     let sub = 0;
-    add(t - 0.3, len, (x, i, j) => {
+    let sub2 = 0;
+    // Termina no beat: o pico vem antes e o golpe do bumbo fica limpo.
+    add(t - len, len, (x, i, j) => {
       const k = 0.02 + 0.25 * Math.sin((Math.PI * x) / len);
       lp += k * (noise(j * 3 + 5) - lp);
-      // Tira o grave abaixo de ~200 Hz: o whoosh não pode ser confundido com o bumbo do beat.
-      sub += 0.026 * (lp - sub);
-      return (lp - sub) * Math.pow(Math.sin((Math.PI * x) / len), 2);
-    }, 1.1, 0);
+      // Tira o grave abaixo de ~250 Hz (dois estágios): o whoosh não pode ser confundido com o bumbo do beat.
+      sub += 0.033 * (lp - sub);
+      const h1 = lp - sub;
+      sub2 += 0.033 * (h1 - sub2);
+      return (h1 - sub2) * Math.pow(Math.sin((Math.PI * x) / len), 2);
+    }, 1.2, 0);
   },
   thud: (t) => {
     let ph = 0;
@@ -220,6 +224,36 @@ const sfx = {
         return lp * Math.exp(-x * 60);
       }, 0.5, k % 2 ? 0.25 : -0.25);
     }
+  },
+  crunch: (t) => {
+    // Mordida crocante: estalos curtos e irregulares de ruído brilhante, por cerca de 0,3 s.
+    const r = mulberry32(seed * 13 + Math.round(t * 1000));
+    let x = 0;
+    while (x < 0.3) {
+      let prev = 0;
+      const g = (0.5 + r() * 0.5) * (1 - x / 0.36);
+      add(t + x, 0.03, (y, i, j) => {
+        const n = noise(j * 37 + 3);
+        const hp = n - prev;
+        prev = n;
+        return hp * Math.exp(-y * 120);
+      }, 1.3 * g, r() * 0.5 - 0.25);
+      x += 0.012 + r() * 0.03;
+    }
+  },
+  moto: (t) => {
+    // Moto passando: ronco médio que sobe e se afasta (sem grave, para não virar bumbo).
+    const len = spb * 3;
+    let ph = 0;
+    let lp = 0;
+    add(t, len, (x) => {
+      const p = x / len;
+      const f = 150 + 90 * Math.sin(Math.PI * p);
+      ph += (2 * Math.PI * f) / SR;
+      const saw = ((ph / (2 * Math.PI)) % 1) * 2 - 1;
+      lp += 0.08 * (saw - lp);
+      return (saw - lp) * Math.sin(Math.PI * p) * (0.85 + 0.15 * Math.sin(2 * Math.PI * 28 * x));
+    }, 0.22, 0);
   },
   chime: (t) => add(t, 1.6, (x) => [880, 1320, 1760].reduce((s, f, k) => s + Math.sin(2 * Math.PI * f * x) / (k + 1), 0) * Math.exp(-x * 3), 0.16, 0),
 };

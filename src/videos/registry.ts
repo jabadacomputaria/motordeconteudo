@@ -9,6 +9,7 @@ import testeBeats from './teste-motor/beats.json';
 import testeBrand from './teste-motor/brand.json';
 import {entry as kyneoPropostaVisto} from './kyneo-proposta-visto/entry';
 import {entry as iaDirecao} from './ia-direcao/entry';
+import {entry as hamburgueria} from './hamburgueria/entry';
 
 export type VideoEntry = {
   id: string;
@@ -22,4 +23,5 @@ export const videos: VideoEntry[] = [
   {id: testeBrief.id, component: TesteMotor, brief: testeBrief, beats: testeBeats as Beats, brand: testeBrand as Brand},
   kyneoPropostaVisto as unknown as VideoEntry,
   iaDirecao as unknown as VideoEntry,
+  hamburgueria as unknown as VideoEntry,
 ];

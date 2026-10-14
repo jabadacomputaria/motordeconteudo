@@ -72,7 +72,9 @@ const win = Math.round(0.04 / 0.002);
 // Só entram os beats que têm golpe de bumbo pelo brief (kickPattern e respiros sem bateria).
 const kp = brief.music.kickPattern || [1];
 const brk = new Set(brief.music.breakBeats || []);
-const withKick = beats.beats.filter((_, i) => kp[i % kp.length] > 0 && !brk.has(i) && brief.music.drums !== false);
+// Com assinatura no fim, a trilha para antes dela: beats depois disso não têm golpe.
+const musicEnd = beats.musicSec ?? beats.durationSec;
+const withKick = beats.beats.filter((t, i) => kp[i % kp.length] > 0 && !brk.has(i) && brief.music.drums !== false && t < musicEnd - 0.05);
 const measured = (withKick.length ? withKick : beats.beats).map((t) => {
   const c = Math.round(t / 0.002);
   const lo = Math.max(0, c - win);
