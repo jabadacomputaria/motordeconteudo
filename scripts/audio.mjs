@@ -139,11 +139,14 @@ const sfx = {
   whoosh: (t) => {
     const len = 0.45;
     let lp = 0;
+    let sub = 0;
     add(t - 0.3, len, (x, i, j) => {
       const k = 0.02 + 0.25 * Math.sin((Math.PI * x) / len);
       lp += k * (noise(j * 3 + 5) - lp);
-      return lp * Math.pow(Math.sin((Math.PI * x) / len), 2);
-    }, 0.9, 0);
+      // Tira o grave abaixo de ~200 Hz: o whoosh não pode ser confundido com o bumbo do beat.
+      sub += 0.026 * (lp - sub);
+      return (lp - sub) * Math.pow(Math.sin((Math.PI * x) / len), 2);
+    }, 1.1, 0);
   },
   thud: (t) => {
     let ph = 0;

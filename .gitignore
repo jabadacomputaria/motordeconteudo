@@ -6,3 +6,4 @@ out/
 # Arquivos de marca e de cliente ficam fora do GitHub (voz, assinatura, símbolo, mixagem e brand.json)
 public/kyneo-proposta-visto/
 src/videos/kyneo-proposta-visto/brand.json
+public/ia-direcao/
