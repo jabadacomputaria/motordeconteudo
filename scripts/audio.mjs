@@ -181,6 +181,43 @@ const sfx = {
       x += 0.07 + r() * 0.08;
     }
   },
+  clap: (t) => {
+    // Claquete: estalo seco de madeira (ruído curto e brilhante) com um baque grave por baixo.
+    let lp = 0;
+    add(t, 0.05, (x, i, j) => {
+      const n = noise(j * 17 + 7);
+      lp += 0.5 * (n - lp);
+      return (n - lp) * Math.exp(-x * 90);
+    }, 1.1, 0);
+    let ph = 0;
+    add(t, 0.12, (x) => {
+      ph += (2 * Math.PI * (180 + 120 * Math.exp(-x * 60))) / SR;
+      return Math.sin(ph) * Math.exp(-x * 35);
+    }, 0.6);
+  },
+  slash: (t) => {
+    // Corte: varrida rápida de ruído agudo.
+    const len = 0.16;
+    let prev = 0;
+    add(t - 0.04, len, (x, i, j) => {
+      const n = noise(j * 23 + 11);
+      const hp = n - prev;
+      prev = n;
+      const env = Math.sin((Math.PI * x) / len);
+      return hp * env * env;
+    }, 0.55, 0.2);
+  },
+  flip: (t) => {
+    // Folhas de calendário: três raspadas curtas de papel.
+    for (let k = 0; k < 3; k++) {
+      let lp = 0;
+      add(t + k * 0.07, 0.05, (x, i, j) => {
+        const n = noise(j * 29 + k * 101);
+        lp += 0.3 * (n - lp);
+        return lp * Math.exp(-x * 60);
+      }, 0.5, k % 2 ? 0.25 : -0.25);
+    }
+  },
   chime: (t) => add(t, 1.6, (x) => [880, 1320, 1760].reduce((s, f, k) => s + Math.sin(2 * Math.PI * f * x) / (k + 1), 0) * Math.exp(-x * 3), 0.16, 0),
 };
 

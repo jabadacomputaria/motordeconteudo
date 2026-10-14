@@ -80,8 +80,13 @@
     },
     {
       "beat": 8,
-      "sfx": "tick",
+      "sfx": "flip",
       "sec": 4.210526
+    },
+    {
+      "beat": 9,
+      "sfx": "flip",
+      "sec": 4.736842
     },
     {
       "beat": 10,
@@ -100,8 +105,18 @@
     },
     {
       "beat": 13,
-      "sfx": "thud",
+      "sfx": "whoosh",
       "sec": 6.842105
+    },
+    {
+      "beat": 14,
+      "sfx": "thud",
+      "sec": 7.368421
+    },
+    {
+      "beat": 16,
+      "sfx": "whoosh",
+      "sec": 8.421053
     },
     {
       "beat": 16,
@@ -135,18 +150,28 @@
     },
     {
       "beat": 23,
-      "sfx": "thud",
+      "sfx": "whoosh",
+      "sec": 12.105263
+    },
+    {
+      "beat": 23,
+      "sfx": "clap",
       "sec": 12.105263
     },
     {
       "beat": 27,
-      "sfx": "whoosh",
+      "sfx": "slash",
       "sec": 14.210526
     },
     {
       "beat": 28,
       "sfx": "pop",
       "sec": 14.736842
+    },
+    {
+      "beat": 29,
+      "sfx": "whoosh",
+      "sec": 15.263158
     },
     {
       "beat": 30,
@@ -182,6 +207,11 @@
       "beat": 40,
       "sfx": "pop",
       "sec": 21.052632
+    },
+    {
+      "beat": 41,
+      "sfx": "whoosh",
+      "sec": 21.578947
     },
     {
       "beat": 41,
