@@ -1,0 +1,287 @@
+{
+  "bpm": 120,
+  "durationSec": 26.017333,
+  "musicSec": 23.5,
+  "tailSec": 23.5,
+  "beats": [
+    0,
+    0.5,
+    1,
+    1.5,
+    2,
+    2.5,
+    3,
+    3.5,
+    4,
+    4.5,
+    5,
+    5.5,
+    6,
+    6.5,
+    7,
+    7.5,
+    8,
+    8.5,
+    9,
+    9.5,
+    10,
+    10.5,
+    11,
+    11.5,
+    12,
+    12.5,
+    13,
+    13.5,
+    14,
+    14.5,
+    15,
+    15.5,
+    16,
+    16.5,
+    17,
+    17.5,
+    18,
+    18.5,
+    19,
+    19.5,
+    20,
+    20.5,
+    21,
+    21.5,
+    22,
+    22.5,
+    23,
+    23.5
+  ],
+  "bars": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22
+  ],
+  "cues": [
+    {
+      "beat": 0,
+      "sfx": "thud",
+      "sec": 0
+    },
+    {
+      "beat": 0,
+      "sfx": "slash",
+      "sec": 0
+    },
+    {
+      "beat": 2,
+      "sfx": "whoosh",
+      "sec": 1
+    },
+    {
+      "beat": 4,
+      "sfx": "whoosh",
+      "sec": 2
+    },
+    {
+      "beat": 5,
+      "sfx": "type",
+      "sec": 2.5
+    },
+    {
+      "beat": 6,
+      "sfx": "pop",
+      "sec": 3
+    },
+    {
+      "beat": 7,
+      "sfx": "whoosh",
+      "sec": 3.5
+    },
+    {
+      "beat": 8,
+      "sfx": "tick",
+      "sec": 4
+    },
+    {
+      "beat": 9,
+      "sfx": "tick",
+      "sec": 4.5
+    },
+    {
+      "beat": 10,
+      "sfx": "tick",
+      "sec": 5
+    },
+    {
+      "beat": 11,
+      "sfx": "pop",
+      "sec": 5.5
+    },
+    {
+      "beat": 12,
+      "sfx": "whoosh",
+      "sec": 6
+    },
+    {
+      "beat": 12,
+      "sfx": "pop",
+      "sec": 6
+    },
+    {
+      "beat": 13,
+      "sfx": "thud",
+      "sec": 6.5
+    },
+    {
+      "beat": 14,
+      "sfx": "thud",
+      "sec": 7
+    },
+    {
+      "beat": 14,
+      "sfx": "riser",
+      "sec": 7
+    },
+    {
+      "beat": 15,
+      "sfx": "clap",
+      "sec": 7.5
+    },
+    {
+      "beat": 16,
+      "sfx": "hit",
+      "sec": 8
+    },
+    {
+      "beat": 17,
+      "sfx": "whoosh",
+      "sec": 8.5
+    },
+    {
+      "beat": 18,
+      "sfx": "click",
+      "sec": 9
+    },
+    {
+      "beat": 19,
+      "sfx": "ratchet",
+      "sec": 9.5
+    },
+    {
+      "beat": 20,
+      "sfx": "whoosh",
+      "sec": 10
+    },
+    {
+      "beat": 21,
+      "sfx": "clank",
+      "sec": 10.5
+    },
+    {
+      "beat": 22,
+      "sfx": "pop",
+      "sec": 11
+    },
+    {
+      "beat": 23,
+      "sfx": "whoosh",
+      "sec": 11.5
+    },
+    {
+      "beat": 24,
+      "sfx": "click",
+      "sec": 12
+    },
+    {
+      "beat": 24,
+      "sfx": "ratchet",
+      "sec": 12
+    },
+    {
+      "beat": 25,
+      "sfx": "whoosh",
+      "sec": 12.5
+    },
+    {
+      "beat": 26,
+      "sfx": "pop",
+      "sec": 13
+    },
+    {
+      "beat": 28,
+      "sfx": "slash",
+      "sec": 14
+    },
+    {
+      "beat": 30,
+      "sfx": "whoosh",
+      "sec": 15
+    },
+    {
+      "beat": 32,
+      "sfx": "whoosh",
+      "sec": 16
+    },
+    {
+      "beat": 33,
+      "sfx": "tick",
+      "sec": 16.5
+    },
+    {
+      "beat": 34,
+      "sfx": "pop",
+      "sec": 17
+    },
+    {
+      "beat": 35,
+      "sfx": "type",
+      "sec": 17.5
+    },
+    {
+      "beat": 37,
+      "sfx": "thud",
+      "sec": 18.5
+    },
+    {
+      "beat": 39,
+      "sfx": "whoosh",
+      "sec": 19.5
+    },
+    {
+      "beat": 40,
+      "sfx": "pop",
+      "sec": 20
+    },
+    {
+      "beat": 41,
+      "sfx": "type",
+      "sec": 20.5
+    },
+    {
+      "beat": 42,
+      "sfx": "hit",
+      "sec": 21
+    },
+    {
+      "beat": 44,
+      "sfx": "whoosh",
+      "sec": 22
+    },
+    {
+      "beat": 45,
+      "sfx": "pop",
+      "sec": 22.5
+    },
+    {
+      "beat": 46,
+      "sfx": "click",
+      "sec": 23
+    }
+  ]
+}

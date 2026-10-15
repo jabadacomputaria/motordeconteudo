@@ -1,0 +1,38 @@
+{
+  "name": "HEB Guinchos e Soluções",
+  "colors": {
+    "bg": "#06182A",
+    "surface": "#0D2338",
+    "ink": "#F3F5F7",
+    "muted": "#8EA2B6",
+    "accent": "#E8692A",
+    "onAccent": "#06182A",
+    "trail": "#123250",
+    "line": "#2B4A68"
+  },
+  "fonts": {
+    "display": {
+      "family": "Montserrat",
+      "titleWeight": 800,
+      "files": [
+        {"src": "fonts/montserrat-latin-600-normal.woff2", "weight": "600"},
+        {"src": "fonts/montserrat-latin-700-normal.woff2", "weight": "700"},
+        {"src": "fonts/montserrat-latin-800-normal.woff2", "weight": "800"}
+      ]
+    },
+    "ui": {
+      "family": "Geist",
+      "files": [
+        {"src": "fonts/geist-latin-500-normal.woff2", "weight": "500"},
+        {"src": "fonts/geist-latin-600-normal.woff2", "weight": "600"}
+      ]
+    },
+    "mono": {
+      "family": "Geist Mono",
+      "files": [
+        {"src": "fonts/geist-mono-latin-500-normal.woff2", "weight": "500"}
+      ]
+    }
+  },
+  "notes": "Marca tirada do cartão final do criativo original: azul-marinho de fundo, laranja como única cor de destaque, branco no texto. Montserrat 800 lembra o logotipo HEB."
+}

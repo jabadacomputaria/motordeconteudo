@@ -223,6 +223,25 @@ const sfx = {
       return hp * env * env;
     }, 0.55, 0.2);
   },
+  clank: (t) => {
+    // Metal travando: parciais inarmônicos agudos (aço) com um estalo curto na frente.
+    const parts = [[1180, 1], [1730, 0.7], [2610, 0.5], [3390, 0.35]];
+    for (const [hz, g] of parts) add(t, 0.35, (x) => Math.sin(2 * Math.PI * hz * x) * Math.exp(-x * (14 + hz / 300)), 0.16 * g, 0.15);
+    let prev = 0;
+    add(t, 0.02, (x, i, j) => {
+      const n = noise(j * 41 + 9);
+      const hp = n - prev;
+      prev = n;
+      return hp * Math.exp(-x * 200);
+    }, 0.8, 0.1);
+  },
+  ratchet: (t) => {
+    // Catraca de guincho: estalos regulares e secos durante um beat.
+    const n = Math.max(4, Math.round(spb / 0.045));
+    for (let k = 0; k < n; k++) {
+      add(t + k * (spb / n), 0.02, (x) => Math.sin(2 * Math.PI * 1900 * x) * Math.exp(-x * 260), 0.14 * (1 - (k / n) * 0.4), k % 2 ? 0.2 : -0.2);
+    }
+  },
   flip: (t) => {
     // Folhas de calendário: três raspadas curtas de papel.
     for (let k = 0; k < 3; k++) {

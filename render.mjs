@@ -35,6 +35,14 @@ if (flag('--sheet')) {
   const output = path.join(outDir, `${id}-sheet.png`);
   await renderStill({...common, composition, output, imageFormat: 'png'});
   console.log(`Contact sheet: ${path.relative(root, output)} (${composition.width}x${composition.height})`);
+} else if (value('--frames') !== undefined) {
+  // Vários quadros em tamanho real de uma vez (um pacote só): out/<id>-f<N>.png para cada N.
+  const composition = await selectComposition({...common, id});
+  for (const frame of value('--frames').split(',').map(Number)) {
+    const output = path.join(outDir, `${id}-f${frame}.png`);
+    await renderStill({...common, composition, output, frame, imageFormat: 'png'});
+    console.log(`Quadro: ${path.relative(root, output)}`);
+  }
 } else if (value('--frame') !== undefined) {
   const frame = Number(value('--frame'));
   const composition = await selectComposition({...common, id});
