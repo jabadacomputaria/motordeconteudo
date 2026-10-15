@@ -28,7 +28,9 @@ fs.mkdirSync(outDir, {recursive: true});
 
 console.log('Empacotando o projeto...');
 const serveUrl = await bundle({entryPoint: path.join(root, 'src', 'index.ts'), publicDir: path.join(root, 'public')});
-const common = {serveUrl, browserExecutable, chromiumOptions: {gl: 'angle'}, logLevel: 'warn'};
+// WebGL (cenas 3D): 'angle' usa a placa de vídeo (Mac). Em servidor sem placa, 'swangle' (SwiftShader).
+const gl = process.env.REMOTION_GL || (browserExecutable === knownShell ? 'swangle' : 'angle');
+const common = {serveUrl, browserExecutable, chromiumOptions: {gl}, logLevel: 'warn'};
 
 if (flag('--sheet')) {
   const composition = await selectComposition({...common, id: `${id}-sheet`});

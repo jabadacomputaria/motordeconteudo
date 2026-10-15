@@ -1,0 +1,13 @@
+{
+  "id": "teste-3d",
+  "title": "Teste do 3D: cadeado de metal que abre",
+  "format": {"width": 1080, "height": 1920, "fps": 30},
+  "music": {"bpm": 96, "bars": 2, "seed": 3, "rootHz": 55, "progression": [0, 5]},
+  "cues": [
+    {"beat": 1, "sfx": "clankLock"},
+    {"beat": 3, "sfx": "latch"},
+    {"beat": 4, "sfx": "glass"},
+    {"beat": 6, "sfx": "hush"},
+    {"beat": 6, "sfx": "lightOn"}
+  ]
+}

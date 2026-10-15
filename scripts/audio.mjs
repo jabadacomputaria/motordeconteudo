@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {integratedLufs} from './loudness.mjs';
+import {extraSfx} from './sfx-extra.mjs';
 
 const SR = 48000;
 const TARGET_LUFS = -14;
@@ -292,6 +293,11 @@ const sfx = {
   },
   chime: (t) => add(t, 1.6, (x) => [880, 1320, 1760].reduce((s, f, k) => s + Math.sin(2 * Math.PI * f * x) / (k + 1), 0) * Math.exp(-x * 3), 0.16, 0),
 };
+// Sons com contexto (scripts/sfx-extra.mjs): um timbre por acontecimento na tela.
+for (const [name, fn] of Object.entries(extraSfx({add, SR, noise, mulberry32}))) {
+  if (sfx[name]) throw new Error(`SFX duplicado: ${name}`);
+  sfx[name] = fn;
+}
 
 // --- arranjo -------------------------------------------------------------
 const beats = [];
@@ -311,6 +317,27 @@ for (let b = 0; b < totalBeats; b++) {
 barStarts.forEach((t, bar) => pad(t, semis(rootHz, progression[bar % progression.length]), spb * 4));
 
 const cues = (brief.cues || []).map((c) => ({...c, sec: +(c.beat * spb).toFixed(6)}));
+
+// Respiro: num cue "hush" a trilha some nos ~0,6 s antes do beat e volta no golpe (destaca o impacto).
+for (const c of cues.filter((c) => c.sfx === 'hush')) {
+  const a = c.sec - 0.62;
+  for (let i = Math.max(0, Math.round((a - 0.08) * SR)); i < Math.min(N, Math.round((c.sec + 0.05) * SR)); i++) {
+    const t = i / SR;
+    const down = Math.min(1, Math.max(0, (t - (a - 0.08)) / 0.08));
+    const up = Math.min(1, Math.max(0, (t - c.sec) / 0.05));
+    const g = 1 - 0.9 * down * (1 - up);
+    L[i] *= g;
+    R[i] *= g;
+  }
+}
+
+// Variedade: o mesmo som repetido cansa (e baixar o volume não resolve). Avisa antes de render.
+{
+  const count = {};
+  for (const c of cues) if (c.sfx !== 'hush') count[c.sfx] = (count[c.sfx] || 0) + 1;
+  const many = Object.entries(count).filter(([k, n]) => n > 3 || (['whoosh', 'swish', 'zip'].includes(k) && n > 1));
+  if (many.length) console.warn(`Atenção, sons repetidos demais: ${many.map(([k, n]) => `${k} x${n}`).join(', ')}. Troque por sons com contexto (veja scripts/sfx-extra.mjs).`);
+}
 toSfx = true;
 // Volume por tipo de efeito (brief.sfxLevels, em dB, ex.: {"whoosh": -9}) e por cue (campo "db").
 const sfxLevels = brief.sfxLevels || {};

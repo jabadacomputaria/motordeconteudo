@@ -96,4 +96,13 @@ const hits = measured.filter((m) => m.peak > median * 0.2);
 const worst = Math.max(...hits.map((m) => Math.abs(m.offsetMs)));
 report(worst <= 12, 'Sincronia', `${hits.length}/${measured.length} beats com golpe medido; maior desvio ${worst} ms (limite 12 ms ≈ 1/3 de frame)`);
 
+// 4. Variedade de sons: nenhum som mais de 3 vezes; whoosh/swish/zip no máximo uma vez.
+{
+  const count = {};
+  for (const c of brief.cues || []) if (c.sfx !== 'hush') count[c.sfx] = (count[c.sfx] || 0) + 1;
+  const many = Object.entries(count).filter(([k, n]) => n > 3 || (['whoosh', 'swish', 'zip'].includes(k) && n > 1));
+  const kinds = Object.keys(count).length;
+  report(!many.length, 'Variedade de sons', many.length ? `repetidos: ${many.map(([k, n]) => `${k} x${n}`).join(', ')}` : `${kinds} timbres diferentes em ${(brief.cues || []).length} sons`);
+}
+
 process.exit(ok ? 0 : 1);
