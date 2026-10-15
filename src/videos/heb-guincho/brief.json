@@ -26,6 +26,7 @@
     "kickPattern": [1, 0, 0.8, 0],
     "breakBeats": [14, 15]
   },
+  "sfxLevels": {"whoosh": -10, "riser": -4},
   "lines": [
     {"text": "Subir ou descer um equipamento a 60 metros", "start": 0.0, "beat": 0},
     {"text": "ainda toma a manhã inteira da sua equipe", "start": 3.38, "beat": 7},

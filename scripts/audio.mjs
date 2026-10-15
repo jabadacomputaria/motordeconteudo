@@ -59,6 +59,7 @@ const R = new Float32Array(N);
 const SFL = new Float32Array(N);
 const SFR = new Float32Array(N);
 let toSfx = false;
+let cueGain = 1;
 
 // --- utilidades -----------------------------------------------------------
 const mulberry32 = (s) => {
@@ -87,8 +88,8 @@ const add = (t0, lenSec, fn, gain = 1, pan = 0) => {
     if (j < 0 || j >= N) continue;
     const v = fn(i / SR, i, j);
     if (toSfx) {
-      SFL[j] += v * gl;
-      SFR[j] += v * gr;
+      SFL[j] += v * gl * cueGain;
+      SFR[j] += v * gr * cueGain;
     } else {
       L[j] += v * gl;
       R[j] += v * gr;
@@ -311,10 +312,14 @@ barStarts.forEach((t, bar) => pad(t, semis(rootHz, progression[bar % progression
 
 const cues = (brief.cues || []).map((c) => ({...c, sec: +(c.beat * spb).toFixed(6)}));
 toSfx = true;
+// Volume por tipo de efeito (brief.sfxLevels, em dB, ex.: {"whoosh": -9}) e por cue (campo "db").
+const sfxLevels = brief.sfxLevels || {};
 for (const c of cues) {
   if (!sfx[c.sfx]) throw new Error(`SFX desconhecido: ${c.sfx}`);
+  cueGain = Math.pow(10, ((sfxLevels[c.sfx] ?? 0) + (c.db ?? 0)) / 20);
   sfx[c.sfx](c.sec);
 }
+cueGain = 1;
 toSfx = false;
 
 // Fade curto no fim da trilha para não estalar; depois dela, silêncio (a assinatura tem som próprio).
