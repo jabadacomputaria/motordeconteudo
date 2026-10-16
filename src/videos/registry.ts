@@ -12,6 +12,7 @@ import {entry as iaDirecao} from './ia-direcao/entry';
 import {entry as hamburgueria} from './hamburgueria/entry';
 import {entry as hebGuincho} from './heb-guincho/entry';
 import {entry as teste3d} from './teste-3d/entry';
+import {entry as geminiAbas} from './gemini-abas/entry';
 
 export type VideoEntry = {
   id: string;
@@ -28,4 +29,5 @@ export const videos: VideoEntry[] = [
   hamburgueria as unknown as VideoEntry,
   hebGuincho as unknown as VideoEntry,
   teste3d as unknown as VideoEntry,
+  geminiAbas as unknown as VideoEntry,
 ];

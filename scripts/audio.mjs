@@ -17,7 +17,7 @@ const id = process.argv[2] || 'teste-motor';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const videoDir = path.join(root, 'src', 'videos', id);
 const brief = JSON.parse(fs.readFileSync(path.join(videoDir, 'brief.json'), 'utf8'));
-const {bpm, bars, seed = 1, rootHz = 55, progression = [0], drums = true, breakBeats: breaks = [], kickPattern = [1, 0.85, 0.85, 0.85]} = brief.music;
+const {bpm, bars, seed = 1, rootHz = 55, progression = [0], drums = true, pad: padOn = true, breakBeats: breaks = [], kickPattern = [1, 0.85, 0.85, 0.85]} = brief.music;
 
 const spb = 60 / bpm;
 const totalBeats = bars * 4;
@@ -314,7 +314,8 @@ for (let b = 0; b < totalBeats; b++) {
   const hz = semis(rootHz, progression[bar % progression.length]);
   if (drums && !breakBeats.has(b)) bass(t + spb / 2, hz, spb / 2);
 }
-barStarts.forEach((t, bar) => pad(t, semis(rootHz, progression[bar % progression.length]), spb * 4));
+// pad:false + drums:false no brief = vídeo só de efeitos (sem trilha musical).
+if (padOn) barStarts.forEach((t, bar) => pad(t, semis(rootHz, progression[bar % progression.length]), spb * 4));
 
 const cues = (brief.cues || []).map((c) => ({...c, sec: +(c.beat * spb).toFixed(6)}));
 

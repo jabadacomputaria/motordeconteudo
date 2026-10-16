@@ -75,6 +75,20 @@ const brk = new Set(brief.music.breakBeats || []);
 // Com assinatura no fim, a trilha para antes dela: beats depois disso não têm golpe.
 const musicEnd = beats.musicSec ?? beats.durationSec;
 const withKick = beats.beats.filter((t, i) => kp[i % kp.length] > 0 && !brk.has(i) && brief.music.drums !== false && t < musicEnd - 0.05);
+// Vídeo só de efeitos (sem bateria): mede os sons de ataque seco nos tempos dos cues, na banda inteira.
+const TRANSIENT = new Set(['tick', 'pop', 'click', 'thud', 'hit', 'clap', 'glass', 'glass2', 'tickLow', 'ding', 'ping', 'stamp', 'thumpLow', 'thumpSoft', 'darkHit', 'bwomp', 'lightOn', 'clankLock', 'latch', 'cardFlick', 'cardFlick2', 'cardFlick3', 'tickClock', 'tockClock', 'crunch', 'crunchBite', 'slap', 'wetPop', 'boom', 'tapSoft', 'pluckA', 'pluckB', 'pluckC', 'sendUp', 'chime', 'notify', 'readTicks', 'playBlip']);
+const sfxOnly = brief.music.drums === false;
+if (sfxOnly) {
+  const spbC = 60 / beats.bpm;
+  const times = (brief.cues || []).filter((c) => TRANSIENT.has(c.sfx)).map((c) => c.beat * spbC);
+  for (let i = 0; i < env.length; i++) {
+    let m = 0;
+    for (let j = i * hop; j < Math.min(L.length, (i + 1) * hop); j++) m = Math.max(m, Math.abs((L[j] + R[j]) / 2));
+    env[i] = m;
+  }
+  for (let i = 0; i < env.length; i++) onset[i] = Math.max(0, env[i] - (env[i - 1] ?? 0));
+  withKick.splice(0, withKick.length, ...times);
+}
 const measured = (withKick.length ? withKick : beats.beats).map((t) => {
   const c = Math.round(t / 0.002);
   const lo = Math.max(0, c - win);
@@ -94,7 +108,7 @@ const measured = (withKick.length ? withKick : beats.beats).map((t) => {
 const median = [...measured].sort((a, b) => a.peak - b.peak)[Math.floor(measured.length / 2)].peak;
 const hits = measured.filter((m) => m.peak > median * 0.2);
 const worst = Math.max(...hits.map((m) => Math.abs(m.offsetMs)));
-report(worst <= 12, 'Sincronia', `${hits.length}/${measured.length} beats com golpe medido; maior desvio ${worst} ms (limite 12 ms ≈ 1/3 de frame)`);
+report(worst <= 12, 'Sincronia', `${hits.length}/${measured.length} ${sfxOnly ? 'efeitos' : 'beats'} com golpe medido; maior desvio ${worst} ms (limite 12 ms ≈ 1/3 de frame)`);
 
 // 4. Variedade de sons: nenhum som mais de 3 vezes; whoosh/swish/zip no máximo uma vez.
 {

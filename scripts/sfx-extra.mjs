@@ -15,6 +15,11 @@
 //   comida      sizzle (fritura), drip/drip2 (pingos), crunchBite (mordida com farelos)
 //   relógio     tickClock, tockClock
 //   ar (no máximo 1 por vídeo)  zip (entrada rápida tonal), swish (passagem curta)
+//   cenas grandes  tabStorm (5 s de cliques, teclas e notificações acelerando e cortando seco: caos de abas),
+//               suck (ar sendo puxado para um ponto; termina no beat), boom (grave de cinema com cauda de ar),
+//               orbIn (luz que nasce: vidro + calor), shimmer (brilho de revelação), resolve (acorde final que abre)
+//   chat/IA     tapSoft (toque leve), sendUp (enviar), think (pensando, pulso suave), pluckA/pluckB/pluckC (itens da
+//               resposta, notas subindo), morph/morph2 (layout que se transforma)
 //   especial    hush: não toca nada; a trilha some ~0,6 s ANTES desse beat e volta no golpe (respiro antes do impacto)
 
 export const extraSfx = ({add, SR, noise, mulberry32}) => {
@@ -192,6 +197,130 @@ export const extraSfx = ({add, SR, noise, mulberry32}) => {
     swish: (t) => {
       const a = lpNoise(0.35), b = lpNoise(0.03);
       add(t - 0.05, 0.2, (x, i, j) => (a(j * 3 + 7) - b(j * 3 + 7)) * Math.pow(Math.sin((Math.PI * x) / 0.2), 2), 0.55);
+    },
+
+    // cenas grandes
+    tabStorm: (t) => {
+      const len = 5.0;
+      const r = mulberry32(77);
+      const h = hpNoise();
+      // eventos cada vez mais densos (de ~3/s a ~28/s), de tipos variados, espalhados no estéreo
+      let x = 0.05;
+      while (x < len - 0.04) {
+        const p = x / len;
+        const kind = r();
+        const pan = r() * 1.6 - 0.8;
+        const g = 0.5 + 0.6 * p;
+        if (kind < 0.45) {
+          const f = 2200 + r() * 2200;
+          add(t + x, 0.035, partials([f, f * 1.5], [1, 0.3], [140, 180]), 0.1 * g, pan);
+        } else if (kind < 0.8) {
+          const sd = Math.floor(r() * 1000);
+          add(t + x, 0.02, (y, i, j) => h(j * 5 + sd) * Math.exp(-y * 260), 0.22 * g, pan);
+        } else if (kind < 0.93) {
+          const f = [988, 1175, 1318, 1568][Math.floor(r() * 4)];
+          add(t + x, 0.12, (y) => Math.sin(TAU * f * y) * Math.exp(-y * 28), 0.07 * g, pan);
+          add(t + x + 0.06, 0.12, (y) => Math.sin(TAU * f * 1.335 * y) * Math.exp(-y * 28), 0.06 * g, pan);
+        } else {
+          glide(160, 90, 30, 0.12, 30, 0.25 * g, pan)(t + x);
+        }
+        x += Math.max(0.035, 0.34 * Math.pow(1 - p, 1.6)) * (0.6 + r() * 0.8);
+      }
+      // zumbido de tensão subindo por baixo, com corte seco no fim
+      let ph1 = 0, ph2 = 0, lp = 0;
+      add(t, len, (y) => {
+        const p = y / len;
+        const f = 70 + 70 * p * p;
+        ph1 += (TAU * f) / SR;
+        ph2 += (TAU * f * 1.012) / SR;
+        const saw = ((ph1 / TAU) % 1) * 2 - 1 + (((ph2 / TAU) % 1) * 2 - 1);
+        lp += (0.02 + 0.06 * p) * (saw - lp);
+        return lp * p * p * Math.min(1, (len - y) / 0.008);
+      }, 0.35);
+    },
+    suck: (t) => {
+      const len = 2.0;
+      const a = lpNoise(0.04), b = lpNoise(0.01);
+      let ph = 0;
+      add(t - len, len, (x, i, j) => {
+        const p = x / len;
+        const n = a(j * 3 + 11) * (1 - p); // corpo grave no começo
+        ph += (TAU * (180 + 1500 * p * p * p)) / SR;
+        const env = Math.pow(p, 2.2) * Math.min(1, (len - x) / 0.006);
+        return (n * 0.6 + (a(j * 5 + 3) - b(j * 5 + 3)) * 2.2 * p + Math.sin(ph) * 0.18 * p) * env;
+      }, 0.9);
+    },
+    boom: (t) => {
+      glide(70, 36, 6, 2.0, 2.2, 0.95)(t);
+      const l = lpNoise(0.05);
+      add(t, 1.6, (x, i, j) => l(j * 2 + 9) * Math.exp(-x * 2.6), 0.9);
+      const h = hpNoise();
+      add(t, 0.04, (x, i, j) => h(j * 3 + 1) * Math.exp(-x * 90), 0.4);
+    },
+    orbIn: (t) => {
+      const len = 2.4;
+      const fs = [1046, 1568 * 1.004, 2093 * 0.997, 3136 * 1.006];
+      add(t, len, (x) => {
+        const env = Math.min(1, x / 0.7) * Math.exp(-Math.max(0, x - 0.9) * 1.8);
+        const trem = 0.8 + 0.2 * Math.sin(TAU * 5 * x);
+        return fs.reduce((s, f, k) => s + Math.sin(TAU * f * x + k) / (k + 1.5), 0) * env * trem;
+      }, 0.09, 0);
+      add(t, len, (x) => Math.sin(TAU * 110 * x) * Math.min(1, x / 0.9) * Math.exp(-Math.max(0, x - 1.1) * 2), 0.22);
+    },
+    shimmer: (t) => {
+      const r = mulberry32(19);
+      const notes = [1568, 1760, 2093, 2349, 2637, 3136, 3520, 4186];
+      for (let k = 0; k < 26; k++) {
+        const at = 1.1 * Math.pow(k / 26, 1.5);
+        const f = notes[Math.floor(r() * notes.length)];
+        add(t + at, 0.25, (x) => Math.sin(TAU * f * x) * Math.exp(-x * 14) * Math.min(1, x / 0.004), 0.05 * (1 - k / 32), r() * 1.4 - 0.7);
+      }
+    },
+    resolve: (t) => add(t, 2.8, (x) => {
+      const env = Math.min(1, x / 0.35) * Math.exp(-Math.max(0, x - 0.6) * 1.3);
+      const chord = [262, 330, 392, 494, 587].reduce((s, f, k) => s + Math.sin(TAU * f * x + k * 0.7) * (1 + 0.15 * Math.sin(TAU * 0.8 * x + k)), 0) / 5;
+      return chord * env + Math.sin(TAU * 65.4 * x) * env * 0.6;
+    }, 0.2),
+    // chat e IA
+    tapSoft: (t) => add(t, 0.05, partials([1150, 2300], [1, 0.25], [110, 150]), 0.18, 0.05),
+    sendUp: (t) => {
+      let ph = 0;
+      add(t, 0.16, (x) => {
+        ph += (TAU * (480 + 1000 * Math.min(1, x / 0.11))) / SR;
+        return Math.sin(ph) * Math.exp(-x * 18) * Math.min(1, x / 0.003);
+      }, 0.16, 0.1);
+    },
+    think: (t) => add(t, 1.9, (x) => {
+      const a = 0.5 + 0.5 * Math.sin(TAU * 3 * x);
+      const env = Math.min(1, x / 0.2) * Math.min(1, (1.9 - x) / 0.4);
+      return (Math.sin(TAU * 660 * x) * a + Math.sin(TAU * 990 * x) * (1 - a) * 0.7) * env;
+    }, 0.06, 0),
+    pluckA: (t) => add(t, 0.6, partials([784, 1568, 2352], [1, 0.35, 0.12], [9, 14, 20]), 0.16, -0.2),
+    pluckB: (t) => add(t, 0.6, partials([988, 1976, 2964], [1, 0.35, 0.12], [9, 14, 20]), 0.16, 0),
+    pluckC: (t) => add(t, 0.7, partials([1175, 2350, 3525], [1, 0.35, 0.12], [8, 13, 19]), 0.16, 0.2),
+    morph: (t) => {
+      const len = 0.7;
+      let hold = 0;
+      let ph = 0;
+      add(t, len, (x, i) => {
+        if (i % 160 === 0) hold = noise(i * 7 + 5);
+        ph += (TAU * (900 - 500 * (x / len))) / SR;
+        const env = Math.sin((Math.PI * x) / len);
+        return (hold * 0.35 + Math.sin(ph) * 0.6) * env * env;
+      }, 0.16, -0.1);
+      add(t + len - 0.02, 0.4, partials([1318, 1976], [1, 0.4], [10, 14]), 0.1);
+    },
+    morph2: (t) => {
+      const len = 0.8;
+      let ph = 0;
+      add(t, len, (x, i) => {
+        const p = x / len;
+        ph += (TAU * (300 + 900 * p)) / SR;
+        const step = Math.floor(p * 10) % 2 ? 1 : 0.6;
+        return Math.sin(ph) * step * Math.sin(Math.PI * p);
+      }, 0.15, 0.1);
+      const bell = partials([1568, 2093, 2637], [1, 0.6, 0.4], [6, 8, 10]);
+      add(t + len - 0.04, 0.9, bell, 0.09);
     },
     // especial: respiro da trilha (tratado no audio.mjs)
     hush: () => {},
