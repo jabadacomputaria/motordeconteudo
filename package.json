@@ -1,38 +1,14 @@
 {
-  "name": "geracao-de-conteudos-motion",
-  "version": "0.1.0",
+  "name": "motordeconteudo",
   "private": true,
-  "description": "Motor de criação de vídeos motion design com IA, feito em Remotion.",
+  "version": "0.2.0",
+  "description": "Motor de criação de vídeos motion design com IA, feito em HyperFrames.",
   "type": "module",
   "scripts": {
-    "studio": "remotion studio",
-    "audio": "node scripts/audio.mjs",
-    "sheet": "node render.mjs --sheet",
-    "render": "node render.mjs",
-    "check": "node scripts/check.mjs"
-  },
-  "dependencies": {
-    "@fontsource/bricolage-grotesque": "^5.3.0",
-    "@fontsource/geist": "5.3.0",
-    "@fontsource/geist-mono": "5.3.0",
-    "@fontsource/inter": "^5.3.0",
-    "@fontsource/montserrat": "^5.3.0",
-    "@fontsource/unbounded": "5.3.0",
-    "@react-three/fiber": "9.3.0",
-    "@remotion/bundler": "4.0.535",
-    "@remotion/cli": "4.0.535",
-    "@remotion/fonts": "4.0.535",
-    "@remotion/google-fonts": "4.0.535",
-    "@remotion/renderer": "4.0.535",
-    "@remotion/three": "4.0.535",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "remotion": "4.0.535",
-    "three": "0.181.2"
-  },
-  "devDependencies": {
-    "@types/react": "19.1.0",
-    "@types/three": "0.181.0",
-    "typescript": "5.8.3"
+    "dev": "npx --yes hyperframes@0.8.167 preview",
+    "check": "npx --yes hyperframes@0.8.167 check",
+    "render": "npx --yes hyperframes@0.8.167 render",
+    "publish": "npx --yes hyperframes@0.8.167 publish",
+    "audio": "node audio-engine/audio.mjs"
   }
 }
